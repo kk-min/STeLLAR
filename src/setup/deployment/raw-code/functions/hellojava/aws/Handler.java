@@ -25,4 +25,11 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
 	response.setStatusCode(200);
 
   }
+
+  public void simulateWork(int incrementLimit) {
+	int i = 0;
+	while (i < incrementLimit) {
+	  i++;
+	}
+  }
 }

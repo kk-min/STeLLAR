@@ -25,8 +25,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
   @Override
   public Void handleRequest(APIGatewayProxyRequestEvent event, Context context)
   {
-    LambdaLogger logger = context.getLogger();
-    logger.log("EVENT TYPE: " + event.getClass());
 	Gson gson = new Gson();
 	int incrementLimit = event.getQueryStringParameters().getOrDefault("incrementLimit", 0);
 	this.simulateWork(incrementLimit);
@@ -34,7 +32,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
 	if (context != null) {
 		requestId = context.getAwsRequestId();	
 	}
-
 
 	Instant now = Instant.now();
 	String[] timestampChain = new String[]{""+now.getEpochSecond()+now.getNano()};

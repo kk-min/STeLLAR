@@ -32,8 +32,8 @@ import (
 	"stellar/util"
 )
 
-//SetupDeployment will create the serverless function zip deployment for the given provider,
-//in the given language and of the given size in bytes. Returns size of deployment in MB and the handler path for AWS automation.
+// SetupDeployment will create the serverless function zip deployment for the given provider,
+// in the given language and of the given size in bytes. Returns size of deployment in MB and the handler path for AWS automation.
 func SetupDeployment(rawCodePath string, provider string, deploymentSizeBytes int64, packageType string, experimentID int, function string) (float64, string) {
 	fillerFilePath := rawCodePath + "/filler.file"
 
@@ -104,6 +104,9 @@ func getExecutableInfo(rawCodePath string, experimentID int, function string) (i
 	case "hellopy":
 		binaryPath = fmt.Sprintf("%s/%s", rawCodePath, "lambda_function.py")
 		handlerPath = fmt.Sprintf("%s/%s", rawCodePath, "lambda_function.lambda_handler")
+	case "hellojava":
+		binaryPath = fmt.Sprintf("%s/%s", rawCodePath, "Handler.java")
+		handlerPath = binaryPath
 	default:
 		log.Fatalf("[sub-experiment %d] Unrecognized or unimplemented function type for ZIP deployment: %s", experimentID, function)
 	}

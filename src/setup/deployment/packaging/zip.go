@@ -31,7 +31,7 @@ import (
 	"stellar/util"
 )
 
-//SetupZIPDeployment will package the function using ZIP
+// SetupZIPDeployment will package the function using ZIP
 func SetupZIPDeployment(provider string, deploymentSizeBytes int64, zipPath string) {
 	deploymentSizeMB := util.BytesToMB(deploymentSizeBytes)
 	switch provider {
@@ -49,7 +49,7 @@ func SetupZIPDeployment(provider string, deploymentSizeBytes int64, zipPath stri
 	util.RunCommandAndLog(exec.Command("rm", "-r", zipPath))
 }
 
-//GetZippedBinaryFileSize zips the binary and returns its size
+// GetZippedBinaryFileSize zips the binary and returns its size
 func GetZippedBinaryFileSize(experimentID int, binaryPath string) int64 {
 	log.Infof("[sub-experiment %d] Zipping binary file to find its size...", experimentID)
 
@@ -67,20 +67,29 @@ func GetZippedBinaryFileSize(experimentID int, binaryPath string) int64 {
 	return zippedBinarySizeBytes
 }
 
-//GenerateZIP creates the zip file for deployment
-func GenerateZIP(experimentID int, fillerFileName string, binaryPath string) string {
+// GenerateZIP creates the zip file for deployment
+func GenerateZIP(experimentID int, fillerFileName string, binaryPath string, function string) string {
 	log.Infof("[sub-experiment %d] Generating ZIP file to be deployed...", experimentID)
-	const localZipName = "benchmarking.zip"
+	switch function {
+	case "hellojava":
+		util.RunCommandAndLog(exec.Command("gradle", "buildZip", "-p", binaryPath))
+		util.RunCommandAndLog(exec.Command("rm", "-r", fillerFileName))
 
-	util.RunCommandAndLog(exec.Command("zip", localZipName, binaryPath, fillerFileName))
+		log.Infof("[sub-experiment %d] Successfully generated ZIP file.", experimentID)
+		return filepath.Join(binaryPath, "build", "distributions", "hellojava.zip")
+	default:
+		const localZipName = "benchmarking.zip"
 
-	util.RunCommandAndLog(exec.Command("rm", "-r", fillerFileName))
+		util.RunCommandAndLog(exec.Command("zip", localZipName, binaryPath, fillerFileName))
 
-	log.Infof("[sub-experiment %d] Successfully generated ZIP file.", experimentID)
+		util.RunCommandAndLog(exec.Command("rm", "-r", fillerFileName))
 
-	workingDirectory, err := filepath.Abs(filepath.Dir("."))
-	if err != nil {
-		log.Fatal(err)
+		log.Infof("[sub-experiment %d] Successfully generated ZIP file.", experimentID)
+
+		workingDirectory, err := filepath.Abs(filepath.Dir("."))
+		if err != nil {
+			log.Fatal(err)
+		}
+		return filepath.Join(workingDirectory, localZipName)
 	}
-	return filepath.Join(workingDirectory, localZipName)
 }

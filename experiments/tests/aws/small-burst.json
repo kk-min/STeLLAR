@@ -4,6 +4,7 @@
   "SubExperiments": [
     {
       "Title": "parallelism1",
+	  "Function": "hellojava",
       "Bursts": 2,
       "BurstSizes": [
         2
@@ -15,6 +16,7 @@
     },
     {
       "Title": "parallelism2",
+	  "Function": "hellojava",
       "Bursts": 4,
       "BurstSizes": [
         1

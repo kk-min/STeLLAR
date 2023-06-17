@@ -43,6 +43,7 @@ tasks.withType(Javadoc) {
 }
 
 task buildZip(type: Zip) {
+	archiveFileName='hellojava.zip'
     into('lib') {
         from(jar)
         from(configurations.runtimeClasspath)

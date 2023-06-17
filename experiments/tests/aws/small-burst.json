@@ -19,7 +19,7 @@
 	  "Function": "hellojava",
       "Bursts": 4,
       "BurstSizes": [
-        1
+        2
       ],
       "DesiredServiceTimes": [
         "0ms"

@@ -4,6 +4,10 @@ sudo apt-get update
 # For the client to run unattended
 sudo apt-get install --no-install-recommends --assume-yes tmux
 
+# Install JDK 11 and Gradle for compiling ZIP archive for Java functions
+sudo apt-get install --no-install-recommends --assume-yes openjdk-11-jdk
+sudo apt-get install --no-install-recommends --assume-yes gradle
+
 # Equivalent to "ulimit -n 1000000", see https://superuser.com/questions/1289345/why-doesnt-ulimit-n-work-when-called-inside-a-script
 sudo sh -c "echo \"* soft nofile 1000000\" >> /etc/security/limits.conf"
 sudo sh -c "echo \"* hard nofile 1000000\" >> /etc/security/limits.conf"

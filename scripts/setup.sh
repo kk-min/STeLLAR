@@ -6,7 +6,13 @@ sudo apt-get install --no-install-recommends --assume-yes tmux
 
 # Install JDK 11 and Gradle for compiling ZIP archive for Java functions
 sudo apt-get install --no-install-recommends --assume-yes openjdk-11-jdk
-sudo apt-get install --no-install-recommends --assume-yes gradle
+wget https://services.gradle.org/distributions/gradle-8.1.1-bin.zip -P /tmp
+sudo unzip -d /opt/gradle /tmp/gradle-8.1.1-bin.zip
+sudo ln -s /opt/gradle/gradle-8.1.1 /opt/gradle/latest
+echo "export GRADLE_HOME=/opt/gradle/latest" >> /etc/profile.d/gradle.sh
+echo "export PATH=\${GRADLE_HOME}/bin:\${PATH}" >> /etc/profile.d/gradle.sh
+sudo chmod +x /etc/profile.d/gradle.sh
+source /etc/profile.d/gradle.sh
 
 # Equivalent to "ulimit -n 1000000", see https://superuser.com/questions/1289345/why-doesnt-ulimit-n-work-when-called-inside-a-script
 sudo sh -c "echo \"* soft nofile 1000000\" >> /etc/security/limits.conf"

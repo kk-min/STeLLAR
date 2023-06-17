@@ -60,7 +60,7 @@ func SetupDeployment(rawCodePath string, provider string, deploymentSizeBytes in
 		}
 
 		generateFillerFile(experimentID, fillerFilePath, deploymentSizeBytes-zippedBinaryFileSizeBytes)
-		zipPath := packaging.GenerateZIP(experimentID, fillerFilePath, binaryPath)
+		zipPath := packaging.GenerateZIP(experimentID, fillerFilePath, binaryPath, function)
 		packaging.SetupZIPDeployment(provider, deploymentSizeBytes, zipPath)
 
 		return util.BytesToMB(deploymentSizeBytes), handlerPath
@@ -105,8 +105,8 @@ func getExecutableInfo(rawCodePath string, experimentID int, function string) (i
 		binaryPath = fmt.Sprintf("%s/%s", rawCodePath, "lambda_function.py")
 		handlerPath = fmt.Sprintf("%s/%s", rawCodePath, "lambda_function.lambda_handler")
 	case "hellojava":
-		binaryPath = fmt.Sprintf("%s/%s", rawCodePath, "Handler.java")
-		handlerPath = binaryPath
+		binaryPath = rawCodePath
+		handlerPath = rawCodePath
 	default:
 		log.Fatalf("[sub-experiment %d] Unrecognized or unimplemented function type for ZIP deployment: %s", experimentID, function)
 	}

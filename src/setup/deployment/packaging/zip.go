@@ -72,7 +72,7 @@ func GenerateZIP(experimentID int, fillerFileName string, binaryPath string, fun
 	log.Infof("[sub-experiment %d] Generating ZIP file to be deployed...", experimentID)
 	switch function {
 	case "hellojava":
-		util.RunCommandAndLog(exec.Command("sh", "gradle buildZip -p "+binaryPath))
+		util.RunCommandAndLog(exec.Command("/opt/gradle/latest", "buildZip", "-p", binaryPath))
 		util.RunCommandAndLog(exec.Command("rm", "-r", fillerFileName))
 
 		log.Infof("[sub-experiment %d] Successfully generated ZIP file.", experimentID)

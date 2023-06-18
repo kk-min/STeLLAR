@@ -117,6 +117,7 @@ func setupAWSConnection(apiTemplatePath string) {
 			const (
 				golangRuntime = "go1.x"
 				pythonRuntime = "python3.8"
+				javaRuntime = "java11"
 			)
 
 			var language string
@@ -125,6 +126,8 @@ func setupAWSConnection(apiTemplatePath string) {
 				language = golangRuntime
 			case "hellopy":
 				language = pythonRuntime
+			case "hellojava":
+				language = javaRuntime
 			default:
 				log.Fatalf("DeployFunction could not recognize function image %s", function)
 			}

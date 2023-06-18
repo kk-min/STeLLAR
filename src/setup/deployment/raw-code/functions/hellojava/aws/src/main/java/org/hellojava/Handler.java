@@ -1,12 +1,13 @@
 package org.hellojava;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.time.Instant;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.google.gson.Gson;
-
-import java.time.Instant;
 
 class ResponseEventBody {
     String region;
@@ -37,7 +38,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         String[] timestampChain = new String[]{""+now.getEpochSecond()+now.getNano()};
         ResponseEventBody resBody = new ResponseEventBody(System.getenv("AWS_REGION"), requestId, timestampChain);
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+		Map<String, String> responseHeaders = new HashMap<>();
+		responseHeaders.put("Content-Type", "application/json");
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent().withHeaders(responseHeaders);
         response.setIsBase64Encoded(false);
         response.setStatusCode(200);
         response.setBody(gson.toJson(resBody));

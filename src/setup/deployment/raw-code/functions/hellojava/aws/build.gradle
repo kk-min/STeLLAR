@@ -55,3 +55,10 @@ task buildZip(type: Zip) {
         from(configurations.runtimeClasspath)
     }
 }
+
+task copyRuntimeDependencies(type: Copy) {
+    from configurations.runtimeClasspath
+    into 'build/dependency'
+}
+
+build.dependsOn copyRuntimeDependencies

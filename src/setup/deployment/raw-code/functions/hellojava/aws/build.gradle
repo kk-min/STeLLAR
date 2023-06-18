@@ -34,6 +34,12 @@ publishing {
     }
 }
 
+jar {
+	manifest {
+		attributes 'Main-Class': 'org.hellojava.Handler'
+	}
+}
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }

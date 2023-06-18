@@ -9,6 +9,7 @@
       "BurstSizes": [
         2
       ],
+      "PackageType": "Image",
       "DesiredServiceTimes": [
         "0ms"
       ],
@@ -21,6 +22,7 @@
       "BurstSizes": [
         2
       ],
+      "PackageType": "Image",
       "DesiredServiceTimes": [
         "0ms"
       ],

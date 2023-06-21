@@ -160,6 +160,7 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 		} else {
 			snapStart = &lambda.SnapStart{
 				ApplyOn: aws.String("Nothing"),
+			}
 		}
 		createArgs = &lambda.CreateFunctionInput{
 			PackageType: aws.String(lambda.PackageTypeImage),
@@ -269,19 +270,20 @@ func (instance awsSingleton) addExecutionPermissions(functionName string) *lambd
 }
 
 func (instance awsSingleton) publishFunction(functionName string) *lambda.FunctionConfiguration {
-		publishArgs := &lambda.PublishVersionInput{
-			FunctionName: aws.String(functionName),
-			Description:  aws.String("SnapStart enabled version of benchmarking function used by vHive-bench."),
-		result, err = instance.lambdaSvc.PublishVersion(publishArgs);
-		if err != nil {
-			if strings.Contains(err.Error(), "TooManyRequestsException") {
-				log.Warnf("Facing AWS rate-limiting error, retrying...")
-				return instance.publishFunction(functionName)
-			}
-
-			log.Fatalf("Cannot publish function: %s", err.Error())
+	publishArgs := &lambda.PublishVersionInput{
+		FunctionName: aws.String(functionName),
+		Description:  aws.String("SnapStart enabled version of benchmarking function used by vHive-bench."),
+	}
+	result, err := instance.lambdaSvc.PublishVersion(publishArgs)
+	if err != nil {
+		if strings.Contains(err.Error(), "TooManyRequestsException") {
+			log.Warnf("Facing AWS rate-limiting error, retrying...")
+			return instance.publishFunction(functionName)
 		}
-		log.Debugf("Publish function result: %s", result.String())
 
-		return result
+		log.Fatalf("Cannot publish function: %s", err.Error())
+	}
+	log.Debugf("Publish function result: %s", result.String())
+
+	return result
 }

@@ -29,13 +29,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io"
 	"path"
-	"strings"
-	"time"
 	"stellar/setup/deployment/connection/amazon"
 	"stellar/util"
+	"strings"
+	"time"
 )
 
-//Endpoint is the schema for the configuration of provider endpoints.
+// Endpoint is the schema for the configuration of provider endpoints.
 type Endpoint struct {
 	GatewayID        string  `json:"GatewayID"`
 	FunctionMemoryMB int64   `json:"FunctionMemoryMB"`
@@ -43,14 +43,14 @@ type Endpoint struct {
 	PackageType      string  `json:"PackageType"`
 }
 
-//ServerlessInterface creates an interface through which to interact with various providers
+// ServerlessInterface creates an interface through which to interact with various providers
 type ServerlessInterface struct {
 	//ListAPIs will list all endpoints corresponding to all serverless functions.
 	ListAPIs func() []Endpoint
 
 	//DeployFunction will create a new serverless function in the specified language, with the specified amount of
 	//memory. An API to access it will then be created, as well as corresponding permissions and integrations.
-	DeployFunction func(binaryPath string, packageType string, language string, memoryAssigned int64) string
+	DeployFunction func(binaryPath string, packageType string, language string, memoryAssigned int64, snapStartEnabled bool) string
 
 	//RemoveFunction will remove the serverless function with given ID and its corresponding API.
 	RemoveFunction func(uniqueID string)
@@ -60,10 +60,10 @@ type ServerlessInterface struct {
 	UpdateFunction func(packageType string, uniqueID string, memoryAssigned int64)
 }
 
-//Singleton allows the client to interact with various serverless actions
+// Singleton allows the client to interact with various serverless actions
 var Singleton *ServerlessInterface
 
-//Initialize will create a new provider connection to interact with
+// Initialize will create a new provider connection to interact with
 func Initialize(provider string, endpointsDirectoryPath string, apiTemplatePath string) {
 	switch strings.ToLower(provider) {
 	case "aws":
@@ -113,10 +113,11 @@ func setupAWSConnection(apiTemplatePath string) {
 			}
 			return make([]Endpoint, 0)
 		},
-		DeployFunction: func(binaryPath string, packageType string, function string, memoryAssigned int64) string {
+		DeployFunction: func(binaryPath string, packageType string, function string, memoryAssigned int64, snapStartEnabled bool) string {
 			const (
 				golangRuntime = "go1.x"
 				pythonRuntime = "python3.8"
+				javaRuntime   = "java11"
 			)
 
 			var language string
@@ -125,11 +126,13 @@ func setupAWSConnection(apiTemplatePath string) {
 				language = golangRuntime
 			case "hellopy":
 				language = pythonRuntime
+			case "hellojava":
+				language = javaRuntime
 			default:
 				log.Fatalf("DeployFunction could not recognize function image %s", function)
 			}
 
-			return amazon.AWSSingletonInstance.DeployFunction(binaryPath, packageType, language, memoryAssigned)
+			return amazon.AWSSingletonInstance.DeployFunction(binaryPath, packageType, language, memoryAssigned, snapStartEnabled)
 		},
 		RemoveFunction: func(uniqueID string) {
 			amazon.AWSSingletonInstance.RemoveFunction(uniqueID)

@@ -183,7 +183,7 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 	if err != nil {
 		if strings.Contains(err.Error(), "TooManyRequestsException") {
 			log.Warnf("Facing AWS rate-limiting error, retrying...")
-			return instance.createFunction(binaryPath, packageType, functionName, language, memoryAssigned)
+			return instance.createFunction(binaryPath, packageType, functionName, language, memoryAssigned, snapStartEnabled)
 		}
 
 		log.Fatalf("Cannot create function: %s", err.Error())

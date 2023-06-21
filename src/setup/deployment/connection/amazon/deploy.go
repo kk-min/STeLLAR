@@ -36,6 +36,10 @@ func (instance awsSingleton) DeployFunction(binaryPath string, packageType strin
 
 	functionName := fmt.Sprintf("%s%s", namingPrefix, *apiConfig.Id)
 	functionConfig := instance.createFunction(binaryPath, packageType, functionName, language, memoryAssigned, snapStartEnabled)
+	if snapStartEnabled {
+		log.Infof("SnapStart is enabled. Publishing function version...")
+		functionConfig = instance.publishFunctionVersion(functionName)
+	}
 
 	resourceID := instance.getResourceID(*apiConfig.Name, *apiConfig.Id)
 	instance.createAPIFunctionIntegration(*apiConfig.Name, functionName, *apiConfig.Id, resourceID, *functionConfig.FunctionArn)
@@ -262,4 +266,22 @@ func (instance awsSingleton) addExecutionPermissions(functionName string) *lambd
 	log.Debugf("Add permission result: %s", result.String())
 
 	return result
+}
+
+func (instance awsSingleton) publishFunction(functionName string) *lambda.FunctionConfiguration {
+		publishArgs := &lambda.PublishVersionInput{
+			FunctionName: aws.String(functionName),
+			Description:  aws.String("SnapStart enabled version of benchmarking function used by vHive-bench."),
+		result, err = instance.lambdaSvc.PublishVersion(publishArgs);
+		if err != nil {
+			if strings.Contains(err.Error(), "TooManyRequestsException") {
+				log.Warnf("Facing AWS rate-limiting error, retrying...")
+				return instance.publishFunction(functionName)
+			}
+
+			log.Fatalf("Cannot publish function: %s", err.Error())
+		}
+		log.Debugf("Publish function result: %s", result.String())
+
+		return result
 }

@@ -31,11 +31,11 @@ import (
 	"strings"
 )
 
-func (instance awsSingleton) DeployFunction(binaryPath string, packageType string, language string, memoryAssigned int64) string {
+func (instance awsSingleton) DeployFunction(binaryPath string, packageType string, language string, memoryAssigned int64, snapStartEnabled bool) string {
 	apiConfig := instance.createRESTAPI()
 
 	functionName := fmt.Sprintf("%s%s", namingPrefix, *apiConfig.Id)
-	functionConfig := instance.createFunction(binaryPath, packageType, functionName, language, memoryAssigned)
+	functionConfig := instance.createFunction(binaryPath, packageType, functionName, language, memoryAssigned, snapStartEnabled)
 
 	resourceID := instance.getResourceID(*apiConfig.Name, *apiConfig.Id)
 	instance.createAPIFunctionIntegration(*apiConfig.Name, functionName, *apiConfig.Id, resourceID, *functionConfig.FunctionArn)
@@ -116,7 +116,7 @@ func (instance awsSingleton) getResourceID(APIName string, apiID string) string 
 	return ""
 }
 
-func (instance awsSingleton) createFunction(binaryPath string, packageType string, functionName string, language string, memoryAssigned int64) *lambda.FunctionConfiguration {
+func (instance awsSingleton) createFunction(binaryPath string, packageType string, functionName string, language string, memoryAssigned int64, snapStartEnabled bool) *lambda.FunctionConfiguration {
 	var lambdaExecutionRole = fmt.Sprintf("arn:aws:iam::%s:role/LambdaProducerConsumer", UserARNNumber)
 	log.Infof("Creating producer function %s with role ARN %s", functionName, lambdaExecutionRole)
 
@@ -148,6 +148,8 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 			MemorySize:    aws.Int64(memoryAssigned),
 		}
 	case "Image":
+		var snapStart *lambda.SnapStart
+		if 
 		createArgs = &lambda.CreateFunctionInput{
 			PackageType: aws.String(lambda.PackageTypeImage),
 			Code: &lambda.FunctionCode{
@@ -156,6 +158,7 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 			Description:   aws.String("Benchmarking function managed and used by vHive-bench."),
 			Role:          aws.String(lambdaExecutionRole),
 			FunctionName:  aws.String(functionName),
+			SnapStart:     &lambda.SnapStart{ApplyOn: aws.String("PublishedVersions")},
 			TracingConfig: &lambda.TracingConfig{Mode: aws.String("PassThrough")},
 			Timeout:       aws.Int64(maxFunctionTimeout),
 			MemorySize:    aws.Int64(memoryAssigned),

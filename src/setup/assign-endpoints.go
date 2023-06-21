@@ -111,7 +111,7 @@ func findEndpointToAssign(availableEndpoints *[]connection.Endpoint, experiment 
 	}
 
 	log.Infof("[sub-experiment %d] Could not find an existing function to repurpose, creating a new function...", experiment.ID)
-	return connection.Singleton.DeployFunction(assignedHandler, experiment.PackageType, experiment.Function, experiment.FunctionMemoryMB)
+	return connection.Singleton.DeployFunction(assignedHandler, experiment.PackageType, experiment.Function, experiment.FunctionMemoryMB, experiment.SnapStartEnabled)
 }
 
 func removeEndpointFromSlice(s []connection.Endpoint, i int) []connection.Endpoint {

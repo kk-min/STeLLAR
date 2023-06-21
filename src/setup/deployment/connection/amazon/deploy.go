@@ -269,7 +269,7 @@ func (instance awsSingleton) addExecutionPermissions(functionName string) *lambd
 	return result
 }
 
-func (instance awsSingleton) publishFunction(functionName string) *lambda.FunctionConfiguration {
+func (instance awsSingleton) publishFunctionVersion(functionName string) *lambda.FunctionConfiguration {
 	publishArgs := &lambda.PublishVersionInput{
 		FunctionName: aws.String(functionName),
 		Description:  aws.String("SnapStart enabled version of benchmarking function used by vHive-bench."),
@@ -278,7 +278,7 @@ func (instance awsSingleton) publishFunction(functionName string) *lambda.Functi
 	if err != nil {
 		if strings.Contains(err.Error(), "TooManyRequestsException") {
 			log.Warnf("Facing AWS rate-limiting error, retrying...")
-			return instance.publishFunction(functionName)
+			return instance.publishFunctionVersion(functionName)
 		}
 
 		log.Fatalf("Cannot publish function: %s", err.Error())

@@ -1,0 +1,33 @@
+{
+  "Sequential": false,
+  "Provider": "aws",
+  "SubExperiments": [
+    {
+      "Title": "parallelism1",
+	  "Function": "hellojava",
+      "Bursts": 2,
+      "BurstSizes": [
+        2
+      ],
+      "PackageType": "Image",
+      "DesiredServiceTimes": [
+        "0ms"
+      ],
+      "FunctionImageSizeMB": 24
+    },
+    {
+      "Title": "parallelism2",
+	  "Function": "hellojava",
+      "Bursts": 4,
+      "BurstSizes": [
+        2
+      ],
+      "PackageType": "Image",
+      "DesiredServiceTimes": [
+        "0ms"
+      ],
+      "FunctionImageSizeMB": 48,
+      "Parallelism": 2
+    }
+  ]
+}

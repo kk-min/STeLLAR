@@ -3,7 +3,7 @@
   "Provider": "aws",
   "SubExperiments": [
     {
-      "Title": "With SnapStart",
+      "Title": "With_SnapStart",
 	  "Function": "hellojava",
 	  "SnapStartEnabled": true,
       "Bursts": 4,
@@ -28,7 +28,7 @@
       "DesiredServiceTimes": [
         "0ms"
       ],
-      "FunctionImageSizeMB": 24,
+      "FunctionImageSizeMB": 24
     }
   ]
 }

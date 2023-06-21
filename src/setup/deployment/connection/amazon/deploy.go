@@ -149,7 +149,14 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 		}
 	case "Image":
 		var snapStart *lambda.SnapStart
-		if 
+		if snapStartEnabled {
+			snapStart = &lambda.SnapStart{
+				ApplyOn: aws.String("PublishedVersions"),
+			}
+		} else {
+			snapStart = &lambda.SnapStart{
+				ApplyOn: aws.String("Nothing"),
+		}
 		createArgs = &lambda.CreateFunctionInput{
 			PackageType: aws.String(lambda.PackageTypeImage),
 			Code: &lambda.FunctionCode{
@@ -158,7 +165,7 @@ func (instance awsSingleton) createFunction(binaryPath string, packageType strin
 			Description:   aws.String("Benchmarking function managed and used by vHive-bench."),
 			Role:          aws.String(lambdaExecutionRole),
 			FunctionName:  aws.String(functionName),
-			SnapStart:     &lambda.SnapStart{ApplyOn: aws.String("PublishedVersions")},
+			SnapStart:     snapStart,
 			TracingConfig: &lambda.TracingConfig{Mode: aws.String("PassThrough")},
 			Timeout:       aws.Int64(maxFunctionTimeout),
 			MemorySize:    aws.Int64(memoryAssigned),

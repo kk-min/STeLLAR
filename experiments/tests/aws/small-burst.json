@@ -3,9 +3,10 @@
   "Provider": "aws",
   "SubExperiments": [
     {
-      "Title": "parallelism1",
+      "Title": "With SnapStart",
 	  "Function": "hellojava",
-      "Bursts": 2,
+	  "SnapStartEnabled": true,
+      "Bursts": 4,
       "BurstSizes": [
         2
       ],
@@ -16,8 +17,9 @@
       "FunctionImageSizeMB": 24
     },
     {
-      "Title": "parallelism2",
+      "Title": "No SnapStart",
 	  "Function": "hellojava",
+	  "SnapStartEnabled": false,
       "Bursts": 4,
       "BurstSizes": [
         2
@@ -26,8 +28,7 @@
       "DesiredServiceTimes": [
         "0ms"
       ],
-      "FunctionImageSizeMB": 48,
-      "Parallelism": 2
+      "FunctionImageSizeMB": 24,
     }
   ]
 }

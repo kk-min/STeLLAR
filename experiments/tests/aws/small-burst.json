@@ -4,8 +4,8 @@
   "SubExperiments": [
     {
       "Title": "With_SnapStart",
-	  "Function": "hellojava",
-	  "SnapStartEnabled": true,
+      "Function": "hellojava",
+      "SnapStartEnabled": true,
       "Bursts": 4,
       "BurstSizes": [
         2
@@ -18,8 +18,8 @@
     },
     {
       "Title": "No SnapStart",
-	  "Function": "hellojava",
-	  "SnapStartEnabled": false,
+      "Function": "hellojava",
+      "SnapStartEnabled": false,
       "Bursts": 4,
       "BurstSizes": [
         2

@@ -1,0 +1,22 @@
+{
+  "Sequential": false,
+  "Provider": "aws",
+  "Runtime": "python3.9",
+  "SubExperiments": [
+    {
+      "Title": "With_SnapStart",
+      "Function": "hellopy",
+      "Handler": "hellopy/lambda_function.lambda_handler",
+      "Bursts": 4,
+      "BurstSizes": [
+        2
+      ],
+      "PackageType": "Zip",
+      "PackagePattern": "hellopy/lambda_function.lambda_handler",
+      "DesiredServiceTimes": [
+        "0ms"
+      ],
+      "FunctionImageSizeMB": 24
+    }
+  ]
+}

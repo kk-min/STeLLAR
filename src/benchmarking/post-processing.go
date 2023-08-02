@@ -31,13 +31,13 @@ import (
 	"io"
 	"os"
 	"sort"
+	"stellar/benchmarking/visualization"
+	slsconfig "stellar/setup/config"
 	"strconv"
 	"time"
-	"stellar/benchmarking/visualization"
-	"stellar/setup"
 )
 
-func postProcessing(experiment setup.SubExperiment, latenciesFile *os.File, burstDeltas []time.Duration, experimentDirectoryPath string, statisticsFile *os.File) {
+func postProcessing(experiment slsconfig.SubExperiment, latenciesFile *os.File, burstDeltas []time.Duration, experimentDirectoryPath string, statisticsFile *os.File) {
 	log.Debugf("[sub-experiment %d] Reading written latencies from file %s", experiment.ID, latenciesFile.Name())
 
 	_, err := latenciesFile.Seek(0, io.SeekStart)

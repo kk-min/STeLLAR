@@ -32,12 +32,12 @@ import (
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/plotutil"
 	"gonum.org/v1/plot/vg"
+	slsconfig "stellar/setup/config"
 	"strings"
 	"time"
-	"stellar/setup"
 )
 
-func plotBurstsBarChart(plotPath string, experiment setup.SubExperiment, coldThreshold float64, latenciesDF dataframe.DataFrame) {
+func plotBurstsBarChart(plotPath string, experiment slsconfig.SubExperiment, coldThreshold float64, latenciesDF dataframe.DataFrame) {
 	plotInstance := plot.New()
 
 	plotInstance.Title.Text = fmt.Sprintf("Bursts Characterization (%vms warm threshold, cooldown ~%vs)",
@@ -113,7 +113,7 @@ func plotBurstLatenciesHistogram(plotPath string, burstLatencies []float64, burs
 	plotInstance.Y.Label.Text = "Requests"
 
 	latencies := make(plotter.Values, len(burstLatencies))
-	
+
 	copy(latencies, burstLatencies)
 
 	histogram, err := plotter.NewHist(latencies, 1<<5)
@@ -127,7 +127,7 @@ func plotBurstLatenciesHistogram(plotPath string, burstLatencies []float64, burs
 	}
 }
 
-func plotLatenciesCDF(plotPath string, sortedLatencies []float64, experiment setup.SubExperiment) {
+func plotLatenciesCDF(plotPath string, sortedLatencies []float64, experiment slsconfig.SubExperiment) {
 	plotInstance := plot.New()
 
 	plotInstance.Title.Text = fmt.Sprintf("IAT ~%vs, Burst sizes %v", experiment.IATSeconds, experiment.BurstSizes)

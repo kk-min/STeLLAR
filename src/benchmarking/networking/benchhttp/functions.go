@@ -27,18 +27,18 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"stellar/setup"
+	slsconfig "stellar/setup/config"
 	"stellar/setup/deployment/connection/amazon"
 	"strings"
 )
 
-//ProducerConsumerResponse is the structure holding the response from a producer-consumer function
+// ProducerConsumerResponse is the structure holding the response from a producer-consumer function
 type ProducerConsumerResponse struct {
 	RequestID      string   `json:"RequestID"`
 	TimestampChain []string `json:"TimestampChain"`
 }
 
-//ExtractProducerConsumerResponse will process an HTTP response body coming from a producer-consumer function
+// ExtractProducerConsumerResponse will process an HTTP response body coming from a producer-consumer function
 func ExtractProducerConsumerResponse(respBody []byte) ProducerConsumerResponse {
 	respBodyString := string(respBody[:])
 	respBodyString = strings.ReplaceAll(respBodyString, "&#34;", "\"")
@@ -52,7 +52,7 @@ func ExtractProducerConsumerResponse(respBody []byte) ProducerConsumerResponse {
 }
 
 func appendProducerConsumerParameters(provider string, request *http.Request, payloadLengthBytes int,
-	assignedFunctionIncrementLimit int64, gatewayEndpoint setup.EndpointInfo, storageTransfer bool, route string) *http.Request {
+	assignedFunctionIncrementLimit int64, gatewayEndpoint slsconfig.EndpointInfo, storageTransfer bool, route string) *http.Request {
 	const (
 		googleBucket = "stellar-us-west-2"
 	)

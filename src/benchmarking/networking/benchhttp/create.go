@@ -26,15 +26,15 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"stellar/setup"
+	slsconfig "stellar/setup/config"
 	"stellar/setup/deployment/connection/amazon"
 	"strings"
 	"time"
 )
 
-//CreateRequest will generate an HTTP request according to the provider passed in the sub-experiment
-//configuration object.
-func CreateRequest(provider string, payloadLengthBytes int, gatewayEndpoint setup.EndpointInfo, assignedFunctionIncrementLimit int64, storageTransfer bool, route string) *http.Request {
+// CreateRequest will generate an HTTP request according to the provider passed in the sub-experiment
+// configuration object.
+func CreateRequest(provider string, payloadLengthBytes int, gatewayEndpoint slsconfig.EndpointInfo, assignedFunctionIncrementLimit int64, storageTransfer bool, route string) *http.Request {
 	var request *http.Request
 
 	switch provider {

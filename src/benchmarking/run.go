@@ -27,7 +27,7 @@ import (
 	"stellar/benchmarking/networking/benchgrpc"
 	"stellar/benchmarking/networking/benchhttp"
 	"stellar/benchmarking/writers"
-	"stellar/setup"
+	slsconfig "stellar/setup/config"
 	"stellar/util"
 	"strconv"
 	"strings"
@@ -35,9 +35,9 @@ import (
 	"time"
 )
 
-//runSubExperiment will trigger bursts sequentially to each available gateway for a given experiment, then sleep for the
-//selected interval, and repeat.
-func runSubExperiment(experiment setup.SubExperiment, burstDeltas []time.Duration, provider string, latenciesWriter *writers.RTTLatencyWriter, dataTransferWriter *writers.DataTransferWriter) {
+// runSubExperiment will trigger bursts sequentially to each available gateway for a given experiment, then sleep for the
+// selected interval, and repeat.
+func runSubExperiment(experiment slsconfig.SubExperiment, burstDeltas []time.Duration, provider string, latenciesWriter *writers.RTTLatencyWriter, dataTransferWriter *writers.DataTransferWriter) {
 	burstID := 0
 	deltaIndex := 0
 	for burstID < experiment.Bursts {
@@ -62,7 +62,7 @@ func runSubExperiment(experiment setup.SubExperiment, burstDeltas []time.Duratio
 	}
 }
 
-func sendBurst(provider string, config setup.SubExperiment, burstID int, requests int, gatewayEndpoint setup.EndpointInfo,
+func sendBurst(provider string, config slsconfig.SubExperiment, burstID int, requests int, gatewayEndpoint slsconfig.EndpointInfo,
 	incrementLimit int64, latenciesWriter *writers.RTTLatencyWriter, dataTransfersWriter *writers.DataTransferWriter, route string) {
 
 	log.Infof("[sub-experiment %d] Starting burst %d, making %d requests with increment limit %d to gateway with ID %q of provider %q.",
@@ -87,7 +87,7 @@ func sendBurst(provider string, config setup.SubExperiment, burstID int, request
 
 func executeRequestAndWriteResults(requestsWaitGroup *sync.WaitGroup, provider string, incrementLimit int64,
 	latenciesWriter *writers.RTTLatencyWriter, dataTransfersWriter *writers.DataTransferWriter, burstID int,
-	payloadLengthBytes int, gatewayEndpoint setup.EndpointInfo, storageTransfer bool, route string) {
+	payloadLengthBytes int, gatewayEndpoint slsconfig.EndpointInfo, storageTransfer bool, route string) {
 	defer requestsWaitGroup.Done()
 
 	var reqSentTime, reqReceivedTime time.Time
@@ -140,7 +140,7 @@ func executeRequestAndWriteResults(requestsWaitGroup *sync.WaitGroup, provider s
 	)
 }
 
-//stringArrayToArrayOfString will process, e.g., "[14 35 8]" into []string{14, 35, 8}
+// stringArrayToArrayOfString will process, e.g., "[14 35 8]" into []string{14, 35, 8}
 func stringArrayToArrayOfString(str string) []string {
 	log.Debugf("stringArrayToArrayOfString argument was %q", str)
 	str = strings.Split(str, "]")[0]

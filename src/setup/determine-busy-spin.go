@@ -26,6 +26,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"math"
 	"math/big"
+	slsconfig "stellar/setup/config"
 	"time"
 )
 
@@ -38,7 +39,7 @@ const (
 )
 
 // FindBusySpinIncrements transforms given service times (e.g., 10s) into busy-spin increments (e.g., 10,000,000)
-func FindBusySpinIncrements(config *Configuration) {
+func FindBusySpinIncrements(config *slsconfig.Configuration) {
 	cachedServiceTimeIncrement = make(map[string]int64)
 	cachedServiceTimeIncrement["0ms"] = 0
 
@@ -48,7 +49,7 @@ func FindBusySpinIncrements(config *Configuration) {
 	}
 }
 
-func findBusySpinIncrement(subExperiment *SubExperiment, standardDurationMs int64) {
+func findBusySpinIncrement(subExperiment *slsconfig.SubExperiment, standardDurationMs int64) {
 	for _, serviceTime := range subExperiment.DesiredServiceTimes {
 		if cachedIncrement, ok := cachedServiceTimeIncrement[serviceTime]; ok {
 			log.Debugf("Using cached increment %d for desired service time %v", cachedIncrement, serviceTime)

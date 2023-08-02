@@ -29,17 +29,17 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
+	slsconfig "stellar/setup/config"
 	"strconv"
 	"strings"
 	"time"
-	"stellar/setup"
 )
 
 const defaultColdThreshold = 300.
 
-//Generate will create plots, charts, histograms etc. according to the
-//visualization passed in the sub-experiment configuration object.
-func Generate(experiment setup.SubExperiment, deltas []time.Duration, latenciesDF dataframe.DataFrame,
+// Generate will create plots, charts, histograms etc. according to the
+// visualization passed in the sub-experiment configuration object.
+func Generate(experiment slsconfig.SubExperiment, deltas []time.Duration, latenciesDF dataframe.DataFrame,
 	sortedLatencies []float64, path string) {
 	switch experiment.Visualization {
 	case "all":
@@ -77,12 +77,12 @@ func Generate(experiment setup.SubExperiment, deltas []time.Duration, latenciesD
 	}
 }
 
-func generateBarCharts(experiment setup.SubExperiment, latenciesDF dataframe.DataFrame, coldThreshold float64, path string) {
+func generateBarCharts(experiment slsconfig.SubExperiment, latenciesDF dataframe.DataFrame, coldThreshold float64, path string) {
 	log.Debugf("[sub-experiment %d] Plotting characterization bar chart", experiment.ID)
 	plotBurstsBarChart(filepath.Join(path, "bursts_characterization.png"), experiment, coldThreshold, latenciesDF)
 }
 
-func generateHistograms(experiment setup.SubExperiment, latenciesDF dataframe.DataFrame, path string, deltas []time.Duration) {
+func generateHistograms(experiment slsconfig.SubExperiment, latenciesDF dataframe.DataFrame, path string, deltas []time.Duration) {
 	histogramsDirectoryPath := filepath.Join(path, "histograms")
 	log.Infof("[sub-experiment %d] Creating directory for histograms at `%s`", experiment.ID, histogramsDirectoryPath)
 	if err := os.MkdirAll(histogramsDirectoryPath, os.ModePerm); err != nil {
@@ -101,7 +101,7 @@ func generateHistograms(experiment setup.SubExperiment, latenciesDF dataframe.Da
 	}
 }
 
-func generateCDFs(config setup.SubExperiment, sortedLatencies []float64, path string) {
+func generateCDFs(config slsconfig.SubExperiment, sortedLatencies []float64, path string) {
 	log.Debugf("[sub-experiment %d] Plotting latencies CDF", config.ID)
 	plotLatenciesCDF(
 		filepath.Join(path, "empirical_CDF.png"),

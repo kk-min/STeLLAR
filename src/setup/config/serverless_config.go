@@ -1,4 +1,4 @@
-package setup
+package config
 
 import (
 	"fmt"
@@ -114,7 +114,7 @@ func RemoveService() string {
 }
 
 // Deploys the functions defined in the serverless.com file
-func deployService() string {
+func DeployService() string {
 	slsDeployCmd := exec.Command("sls", "deploy")
 	slsDeployCmd.Dir = "src/setup/deployment/raw-code/serverless/aws"
 	slsDeployMessage := util.RunCommandAndLog(slsDeployCmd)

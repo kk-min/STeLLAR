@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package setup
+package config
 
 import (
 	"encoding/json"
@@ -29,20 +29,20 @@ import (
 	"stellar/util"
 )
 
-//Configuration is the schema for all experiment configurations.
+// Configuration is the schema for all experiment configurations.
 type Configuration struct {
 	Sequential     bool            `json:"Sequential"`
 	Provider       string          `json:"Provider"`
 	SubExperiments []SubExperiment `json:"SubExperiments"`
 }
 
-//EndpointInfo contains an ID identifying the function together with the IDs of other functions further in the data transfer chain
+// EndpointInfo contains an ID identifying the function together with the IDs of other functions further in the data transfer chain
 type EndpointInfo struct {
 	ID                   string
 	DataTransferChainIDs []string
 }
 
-//SubExperiment contains all the information needed for a sub-experiment to run.
+// SubExperiment contains all the information needed for a sub-experiment to run.
 type SubExperiment struct {
 	ID                      int
 	Title                   string   `json:"Title"`
@@ -81,7 +81,7 @@ const (
 	defaultFunctionMemoryMB        = 128
 )
 
-//ExtractConfiguration will read and parse the JSON configuration file, assign any default values and return the config object
+// ExtractConfiguration will read and parse the JSON configuration file, assign any default values and return the config object
 func ExtractConfiguration(configFilePath string) Configuration {
 	configFile := util.ReadFile(configFilePath)
 	configByteValue, _ := io.ReadAll(configFile)

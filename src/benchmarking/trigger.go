@@ -29,15 +29,15 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"stellar/benchmarking/writers"
+	slsconfig "stellar/setup/config"
 	"sync"
 	"time"
-	"stellar/benchmarking/writers"
-	"stellar/setup"
 )
 
-//TriggerSubExperiments will run the sub-experiments specified by the passed configuration object. It creates
-//a directory for each sub-experiment, as well as separate visualizations and latency files.
-func TriggerSubExperiments(config setup.Configuration, outputDirectoryPath string, specificExperiment int) {
+// TriggerSubExperiments will run the sub-experiments specified by the passed configuration object. It creates
+// a directory for each sub-experiment, as well as separate visualizations and latency files.
+func TriggerSubExperiments(config slsconfig.Configuration, outputDirectoryPath string, specificExperiment int) {
 	var experimentsWaitGroup sync.WaitGroup
 
 	switch specificExperiment {
@@ -62,7 +62,7 @@ func TriggerSubExperiments(config setup.Configuration, outputDirectoryPath strin
 	experimentsWaitGroup.Wait()
 }
 
-func triggerSubExperiment(experimentsWaitGroup *sync.WaitGroup, provider string, experiment setup.SubExperiment, outputDirectoryPath string) {
+func triggerSubExperiment(experimentsWaitGroup *sync.WaitGroup, provider string, experiment slsconfig.SubExperiment, outputDirectoryPath string) {
 	log.Infof("[sub-experiment %d] Starting...", experiment.ID)
 	defer experimentsWaitGroup.Done()
 
@@ -89,7 +89,7 @@ func triggerSubExperiment(experimentsWaitGroup *sync.WaitGroup, provider string,
 	log.Infof("[sub-experiment %d] Successfully finished.", experiment.ID)
 }
 
-func createSubExperimentOutput(path string, experiment setup.SubExperiment) (string, *os.File, *os.File, *os.File) {
+func createSubExperimentOutput(path string, experiment slsconfig.SubExperiment) (string, *os.File, *os.File, *os.File) {
 	detailedTitle := fmt.Sprintf("%s-memory%dMB-img%dMB-IAT%vs-burst%d-st%s-payload%dKB", experiment.Title,
 		int(experiment.FunctionMemoryMB), int(experiment.FunctionImageSizeMB), experiment.IATSeconds, experiment.BurstSizes[0],
 		experiment.DesiredServiceTimes[0], experiment.PayloadLengthBytes/1024.0)
@@ -127,7 +127,7 @@ func createSubExperimentOutput(path string, experiment setup.SubExperiment) (str
 	return directoryPath, latenciesFile, statisticsFile, nil
 }
 
-func generateIAT(experiment setup.SubExperiment) []time.Duration {
+func generateIAT(experiment slsconfig.SubExperiment) []time.Duration {
 	step := 1.0
 	maxStep := experiment.IATSeconds
 	runningDelta := math.Min(maxStep, experiment.IATSeconds)

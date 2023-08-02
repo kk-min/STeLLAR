@@ -27,14 +27,15 @@ package setup
 import (
 	log "github.com/sirupsen/logrus"
 	"os"
+	slsconfig "stellar/setup/config"
 	"stellar/setup/deployment/connection/amazon"
 	"strconv"
 	"strings"
 	"time"
 )
 
-//ProvisionFunctions will deploy, reconfigure, etc. functions to get ready for the sub-experiments.
-func ProvisionFunctions(config *Configuration) {
+// ProvisionFunctions will deploy, reconfigure, etc. functions to get ready for the sub-experiments.
+func ProvisionFunctions(config *slsconfig.Configuration) {
 	const (
 		nicContentionWarnThreshold = 800 // Experimentally found
 		storageSpaceWarnThreshold  = 500 // 500 * ~18KiB = 10MB just for 1 sub-experiment
@@ -42,7 +43,7 @@ func ProvisionFunctions(config *Configuration) {
 
 	//availableEndpoints := connection.Singleton.ListAPIs()
 
-	slsConfig := &Serverless{}
+	slsConfig := &slsconfig.Serverless{}
 
 	slsConfig.CreateHeader(*config)
 	slsConfig.AddPackagePattern("!**")
@@ -88,7 +89,7 @@ func ProvisionFunctions(config *Configuration) {
 	slsConfig.CreateServerlessConfigFile()
 
 	log.Infof("Starting serverless.com deployment.")
-	slsDeployMessage := deployService()
+	slsDeployMessage := slsconfig.DeployService()
 	log.Infof(slsDeployMessage)
 
 	endpointID := getEndpointID(slsDeployMessage)
@@ -106,10 +107,10 @@ func ProvisionFunctions(config *Configuration) {
 	}
 }
 
-func assignEndpointIDs(endpointID string, subex *SubExperiment) {
-	subex.Endpoints = []EndpointInfo{}
+func assignEndpointIDs(endpointID string, subex *slsconfig.SubExperiment) {
+	subex.Endpoints = []slsconfig.EndpointInfo{}
 	for i := 0; i < subex.Parallelism; i++ {
-		subex.Endpoints = append(subex.Endpoints, EndpointInfo{ID: endpointID})
+		subex.Endpoints = append(subex.Endpoints, slsconfig.EndpointInfo{ID: endpointID})
 	}
 	log.Infof(strconv.Itoa(len(subex.Endpoints)))
 }

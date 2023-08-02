@@ -31,6 +31,7 @@ import (
 	"path/filepath"
 	"stellar/benchmarking"
 	"stellar/setup"
+	slsconfig "stellar/setup/config"
 	"stellar/setup/deployment/connection"
 	"stellar/setup/deployment/connection/amazon"
 	"time"
@@ -65,7 +66,7 @@ func main() {
 	log.Infof("Selected output path: %s", *outputPathFlag)
 	log.Infof("Selected experiment (-1 for all): %d", *specificExperimentFlag)
 
-	config := setup.ExtractConfiguration(*configPathFlag)
+	config := slsconfig.ExtractConfiguration(*configPathFlag)
 
 	amazon.UserARNNumber = *awsUserArnNumber
 
@@ -78,7 +79,7 @@ func main() {
 
 	benchmarking.TriggerSubExperiments(config, outputDirectoryPath, *specificExperimentFlag)
 
-	setup.RemoveService()
+	slsconfig.RemoveService()
 	log.Infof("Service successfully removed.")
 
 	log.Infof("Done in %v, exiting...", time.Since(startTime))

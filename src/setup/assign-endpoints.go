@@ -27,12 +27,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/lambda"
 	log "github.com/sirupsen/logrus"
 	"math"
+	slsconfig "stellar/setup/config"
 	"stellar/setup/deployment"
 	"stellar/setup/deployment/connection"
 	"stellar/util"
 )
 
-func assignEndpoints(availableEndpoints []connection.Endpoint, experiment *SubExperiment, provider string) []connection.Endpoint {
+func assignEndpoints(availableEndpoints []connection.Endpoint, experiment *slsconfig.SubExperiment, provider string) []connection.Endpoint {
 	log.Infof("[sub-experiment %d] Setting up deployment...", experiment.ID)
 	log.Infof("[sub-experiment %d] Experiment configuration: %vMB memory, %vMB image size, %vs IAT, %q package.",
 		experiment.ID, experiment.FunctionMemoryMB, experiment.FunctionImageSizeMB, experiment.IATSeconds,
@@ -51,11 +52,11 @@ func assignEndpoints(availableEndpoints []connection.Endpoint, experiment *SubEx
 		)
 	}
 
-	var assignedEndpoints []EndpointInfo
+	var assignedEndpoints []slsconfig.EndpointInfo
 	for i := 0; i < experiment.Parallelism; i++ {
 		foundEndpointID := findEndpointToAssign(&availableEndpoints, experiment, assignedHandler)
 
-		gatewayEndpoint := EndpointInfo{ID: foundEndpointID}
+		gatewayEndpoint := slsconfig.EndpointInfo{ID: foundEndpointID}
 		// what's DataTransferChainIDs????
 		for j := experiment.DataTransferChainLength; j > 1; j-- {
 			gatewayEndpoint.DataTransferChainIDs = append(
@@ -73,7 +74,7 @@ func assignEndpoints(availableEndpoints []connection.Endpoint, experiment *SubEx
 }
 
 // this id where the good stuff takes place
-func findEndpointToAssign(availableEndpoints *[]connection.Endpoint, experiment *SubExperiment, assignedHandler string) string {
+func findEndpointToAssign(availableEndpoints *[]connection.Endpoint, experiment *slsconfig.SubExperiment, assignedHandler string) string {
 	for index, endpoint := range *availableEndpoints {
 		if specsMatch(endpoint, experiment) {
 			*availableEndpoints = removeEndpointFromSlice(*availableEndpoints, index)
@@ -121,7 +122,7 @@ func removeEndpointFromSlice(s []connection.Endpoint, i int) []connection.Endpoi
 	return s[:len(s)-1]
 }
 
-func specsMatch(endpoint connection.Endpoint, experiment *SubExperiment) bool {
+func specsMatch(endpoint connection.Endpoint, experiment *slsconfig.SubExperiment) bool {
 	if experiment.PackageType != endpoint.PackageType {
 		return false
 	}

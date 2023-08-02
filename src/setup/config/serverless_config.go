@@ -71,7 +71,7 @@ func (s *Serverless) CreateServerlessConfigFile() {
 		log.Fatal(err)
 	}
 
-	err2 := ioutil.WriteFile("src/setup/deployment/raw-code/serverless/aws/serverless.yml", data, 0644)
+	err2 := ioutil.WriteFile("setup/deployment/raw-code/serverless/aws/serverless.yml", data, 0644)
 
 	if err2 != nil {
 		log.Fatal(err2)
@@ -108,7 +108,7 @@ func (s *Serverless) AddFunctionConfig(subex *SubExperiment, index int) {
 // RemoveService removes the service defined in serverless.yml
 func RemoveService() string {
 	slsRemoveCmd := exec.Command("sls", "remove")
-	slsRemoveCmd.Dir = "src/setup/deployment/raw-code/serverless/aws"
+	slsRemoveCmd.Dir = "setup/deployment/raw-code/serverless/aws"
 	slsRemoveMessage := util.RunCommandAndLog(slsRemoveCmd)
 	return slsRemoveMessage
 }
@@ -116,7 +116,7 @@ func RemoveService() string {
 // Deploys the functions defined in the serverless.com file
 func DeployService() string {
 	slsDeployCmd := exec.Command("sls", "deploy")
-	slsDeployCmd.Dir = "src/setup/deployment/raw-code/serverless/aws"
+	slsDeployCmd.Dir = "setup/deployment/raw-code/serverless/aws"
 	slsDeployMessage := util.RunCommandAndLog(slsDeployCmd)
 	return slsDeployMessage
 }

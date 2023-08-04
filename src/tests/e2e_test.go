@@ -1,12 +1,12 @@
 package tests
 
 import (
-	"os/exec"
-	"stellar/util"
-	"testing"
 	"bufio"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"os/exec"
+	"stellar/util"
+	"testing"
 )
 
 func TestMainFunction(t *testing.T) {
@@ -15,15 +15,19 @@ func TestMainFunction(t *testing.T) {
 	buildCommand.Dir = "../"
 	util.RunCommandAndLog(buildCommand)
 
-	log.Info("Running binary...")
 	mainCommand := exec.Command("./main", "-a", "887565851781", "-o", "latency-samples", "-g", "endpoints", "-c", "../experiments/tests/aws/small-burst.json")
 	mainCommand.Dir = "../"
-	stdout, _ := mainCommand.StdoutPipe()
-	util.RunCommandAndLog(mainCommand)
 
+	stdout, _ := mainCommand.StdoutPipe()
 	scanner := bufio.NewScanner(stdout)
 	scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())	
-	}
+	go func() {
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	}()
+
+	log.Info("Running binary...")
+	util.RunCommandAndLog(mainCommand)
+
 }

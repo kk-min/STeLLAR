@@ -2,7 +2,6 @@ package tests
 
 import (
 	"bufio"
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"testing"
@@ -17,6 +16,7 @@ func TestMainFunction(t *testing.T) {
 		log.Fatal(err)
 	}
 
+	// Wait() returns nil if the command successfully executes and exits with status code 0
 	err = buildCommand.Wait()
 	if err != nil {
 		log.Fatal(err)
@@ -25,12 +25,13 @@ func TestMainFunction(t *testing.T) {
 	mainCommand := exec.Command("./main", "-a", "887565851781", "-o", "latency-samples", "-g", "endpoints", "-c", "../experiments/tests/aws/small-burst.json")
 	mainCommand.Dir = "../"
 
+	// Create scanner and scan stdout in a goroutine to get real-time printing
 	stdout, _ := mainCommand.StdoutPipe()
 	scanner := bufio.NewScanner(stdout)
 	scanner.Split(bufio.ScanLines)
 	go func() {
 		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+			log.Info(scanner.Text())
 		}
 	}()
 
